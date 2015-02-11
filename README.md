@@ -3,11 +3,12 @@
 Python script to test the limits of Vengit SBrick from linux system using BlueZ 5 gatttool
 
 Usage:
-  sbstress.py -a <adapter> -d <device> -p <period>
+
+sbstress.py -a 'adapter>' -d 'device' -p 'period'
   
-  <adapter> is the hci ID of your bluetooth 4.0+ adapter (like hci0)
-  <device>  is the SBrick Bluetooh address (like AA:BB:CC:DD:EE:FF)
-  <period>  is the time in ms that occurs between each command sent to the SBrick (like 330)
+  'adapter' is the hci ID of your bluetooth 4.0+ adapter (like hci0)
+  'device'  is the SBrick Bluetooh address (like AA:BB:CC:DD:EE:FF)
+  'period'  is the time in ms that occurs between each command sent to the SBrick (like 330)
   
 This  script works with the original firmware (4.0) as also with 4.2 (well, at least 4.2b2).
 Firmware 4.0 doesn't allow to read temperature and voltage values. Firmware 4.2 allows it but some Bluetooth Low Energy handles changed so gatttool commands need to be changed. There are other new features like one extremely relevant for my scripts - a watchdog: by default, SBrick now drops the BLE session after 500 ms so we need to keep talking to it.
