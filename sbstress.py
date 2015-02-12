@@ -256,6 +256,10 @@ def print_version():
 
 def main(argv):
 
+  BT_ADAPTER = ''
+  SBRICK_ADDR = ''
+  PERIOD = ''
+  
   try:
     opts, args = getopt.getopt(argv,"hva:d:p:")
 
