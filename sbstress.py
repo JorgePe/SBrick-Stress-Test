@@ -150,6 +150,7 @@ class Tool:
 
     self.temp = StringVar()
     self.volt = StringVar()
+    self.ports= StringVar()
     self.pwm1 = IntVar()
     self.pwm2 = IntVar()
     self.pwm3 = IntVar()
@@ -157,6 +158,8 @@ class Tool:
 
     self.temp.set("00.0")
     self.volt.set("0.0")
+    self.ports.set("Nr of Ports:")
+    self.optionNr = 0
     self.pwm1.set(0)
     self.pwm2.set(0)
     self.pwm3.set(0)
@@ -179,24 +182,25 @@ class Tool:
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
     LabelVoltage.grid(row=0, column=2)
 
+    LabelScales=Label(self.root, textvariable=self.ports, font=(FONT_TYPE, FONT_SIZE))
+    LabelScales.grid(row=1, column=0)
 
-    for x in range(0, 4):
-      CheckPort1=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(x+1), padx=50, pady=10)
-      CheckPort1.grid(row=1,column=x)
-
-      Port1 = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
-      Port1.grid(row=2,column=x)
+    OPTIONS = ['1', '2', '3', '4']
+    var=StringVar(self.root)
+    var.set("0")
+    self.option = OptionMenu(self.root, var, *OPTIONS)
+    self.option.grid(row=1,column=1)
 
     LabelQuit=Label(self.root, height=1, pady=10)
-    LabelQuit.grid(row=3)
+    LabelQuit.grid(row=4)
     Button_QUIT = Button(text = "QUIT", command = self.quit)
-    Button_QUIT.grid(row=4, column=1, columnspan=2)
+    Button_QUIT.grid(row=5, column=1, columnspan=2)
 
   def twoDigitHex(self,number):
       return '%02x' % number
 
   def Sync(self, *ignore):
-    for x in range(0, 4):
+    for x in range(0, self.optionNr):
       direction="0"
       if( (self.pwms[x].get() >= 0 and self.checks[x].get()==1) or
           (self.pwms[x].get() <  0 and self.checks[x].get()==0) ):
@@ -215,6 +219,27 @@ class Tool:
     self.temp.set(self.SBRICK.ReadTemp())
     self.volt.set(self.SBRICK.ReadVolt()) 
     self.root.after(self.SBRICK.GetPeriod(),self.refresh)  # reschedule event
+
+    if (self.optionNr != int(self.option.cget("text"))):
+      self.optionNr = int(self.option.cget("text"))
+      #remove alls scales and checkbuttons
+      for slaves in self.root.grid_slaves(row=2):
+        slaves.grid_remove()
+      for slaves in self.root.grid_slaves(row=3):
+        slaves.grid_remove()
+
+      # drow all necessary items
+      for x in range(0, self.optionNr):
+        CheckPort=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(x+1), padx=50, pady=10)
+        CheckPort.grid(row=2,column=x)
+
+        Port = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
+        Port.grid(row=3,column=x)
+
+      # stop all not used ports
+      for x in range(0, int(4-self.optionNr)):
+        self.SBRICK.Stop("0"+str(self.optionNr+x))
+
     self.Sync()
 
 def print_help():
