@@ -142,7 +142,7 @@ class Tool:
   def __init__(self, sbrick):
     self.SBRICK = sbrick
     self.ScaleMAX = sbrick.GetScaleMAX()
-    self.ScaleMIN = sbrick.GetScaleMIN()
+    self.ScaleMIN = -1*self.ScaleMAX
     self.LENGTH = abs(self.ScaleMAX - self.ScaleMIN)
 
     self.root=Tk()
@@ -210,25 +210,29 @@ class Tool:
       return '%02x' % number
 
   def Sync(self, *ignore):
-    if(self.check1.get()==0):
-      self.SBRICK.Drive("0000"+self.twoDigitHex(self.pwm1.get()))
-    else:
-      self.SBRICK.Drive("0001"+self.twoDigitHex(self.pwm1.get()))
+    direction="0"
+    if( (self.pwm1.get() >= 0 and self.check1.get()==1) or
+        (self.pwm1.get() <  0 and self.check1.get()==0) ):
+      direction="1"
+    self.SBRICK.Drive("000"+direction+self.twoDigitHex(self.pwm1.get()))
 
-    if(self.check2.get()==0):
-      self.SBRICK.Drive("0100"+self.twoDigitHex(self.pwm2.get()))
-    else:
-      self.SBRICK.Drive("0101"+self.twoDigitHex(self.pwm2.get()))
+    direction="0"
+    if( (self.pwm2.get() >= 0 and self.check2.get()==1) or
+        (self.pwm2.get() <  0 and self.check2.get()==0) ):
+      direction="1"    if(self.check2.get()==0):
+    self.SBRICK.Drive("010"+direction+self.twoDigitHex(self.pwm2.get()))
 
-    if(self.check3.get()==0):
-      self.SBRICK.Drive("0200"+self.twoDigitHex(self.pwm3.get()))
-    else:
-      self.SBRICK.Drive("0201"+self.twoDigitHex(self.pwm3.get()))
+    direction="0"
+    if( (self.pwm3.get() >= 0 and self.check3.get()==1) or
+        (self.pwm3.get() <  0 and self.check3.get()==0) ):
+      direction="1"
+    self.SBRICK.Drive("020"+direction+self.twoDigitHex(self.pwm3.get()))
 
-    if(self.check4.get()==0):
-      self.SBRICK.Drive("0300"+self.twoDigitHex(self.pwm4.get()))
-    else:
-      self.SBRICK.Drive("0301"+self.twoDigitHex(self.pwm4.get()))
+    direction="0"
+    if( (self.pwm4.get() >= 0 and self.check4.get()==1) or
+        (self.pwm4.get() <  0 and self.check4.get()==0) ):
+      direction="1"
+    self.SBRICK.Drive("030"+direction+self.twoDigitHex(self.pwm4.get()))
 
     return
                
