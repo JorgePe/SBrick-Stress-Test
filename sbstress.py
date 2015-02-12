@@ -222,13 +222,13 @@ class Tool:
 
     if (self.optionNr != int(self.option.cget("text"))):
       self.optionNr = int(self.option.cget("text"))
-      #remove alls scales and checkbuttons
+      #remove all scales and checkbuttons
       for slaves in self.root.grid_slaves(row=2):
         slaves.grid_remove()
       for slaves in self.root.grid_slaves(row=3):
         slaves.grid_remove()
 
-      # drow all necessary items
+      # draw all necessary items
       for x in range(0, self.optionNr):
         CheckPort=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(x+1), padx=50, pady=10)
         CheckPort.grid(row=2,column=x)
