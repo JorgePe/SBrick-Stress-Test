@@ -219,7 +219,7 @@ class Tool:
     direction="0"
     if( (self.pwm2.get() >= 0 and self.check2.get()==1) or
         (self.pwm2.get() <  0 and self.check2.get()==0) ):
-      direction="1"    if(self.check2.get()==0):
+      direction="1"
     self.SBRICK.Drive("010"+direction+self.twoDigitHex(self.pwm2.get()))
 
     direction="0"
