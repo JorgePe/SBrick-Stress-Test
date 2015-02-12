@@ -161,6 +161,7 @@ class Tool:
     self.pwm2.set(0)
     self.pwm3.set(0)
     self.pwm4.set(0)
+    self.pwms = [self.pwm1, self.pwm2, self.pwm3, self.pwm4]
  
     self.check1=IntVar()
     self.check1.set(0)
@@ -170,6 +171,7 @@ class Tool:
     self.check3.set(0)
     self.check4=IntVar()
     self.check4.set(0)
+    self.checks = [self.check1, self.check2, self.check3, self.check4]
 
     LabelTemperature=Label(self.root, textvariable=self.temp, font=(FONT_TYPE, FONT_SIZE))
     LabelTemperature.grid(row=0, column=1)
@@ -177,29 +179,13 @@ class Tool:
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
     LabelVoltage.grid(row=0, column=2)
 
-    CheckPort1=Checkbutton(self.root, variable = self.check1,takefocus=1, text="Port #1", padx=50, pady=10)
-    CheckPort1.grid(row=1,column=0)
 
-    Port1 = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwm1)
-    Port1.grid(row=2,column=0)
+    for x in range(0, 4):
+      CheckPort1=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(x+1), padx=50, pady=10)
+      CheckPort1.grid(row=1,column=x)
 
-    CheckPort2=Checkbutton(self.root, variable = self.check2,takefocus=1, text="Port #2", padx=50, pady=10)
-    CheckPort2.grid(row=1,column=1)
-
-    Port2 = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH,  takefocus=1, command=self.Sync, variable=self.pwm2)
-    Port2.grid(row=2,column=1)
-
-    CheckPort3=Checkbutton(self.root, variable = self.check3,takefocus=1, text="Port #3", padx=50, pady=10)
-    CheckPort3.grid(row=1,column=2)
-
-    Port3 = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH,  takefocus=1, command=self.Sync, variable=self.pwm3)
-    Port3.grid(row=2,column=2)
-
-    CheckPort4=Checkbutton(self.root, variable = self.check4,takefocus=1, text="Port #4", padx=50, pady=10)
-    CheckPort4.grid(row=1,column=3)
-
-    Port4 = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwm4)
-    Port4.grid(row=2,column=3)
+      Port1 = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=1, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
+      Port1.grid(row=2,column=x)
 
     LabelQuit=Label(self.root, height=1, pady=10)
     LabelQuit.grid(row=3)
@@ -210,29 +196,12 @@ class Tool:
       return '%02x' % number
 
   def Sync(self, *ignore):
-    direction="0"
-    if( (self.pwm1.get() >= 0 and self.check1.get()==1) or
-        (self.pwm1.get() <  0 and self.check1.get()==0) ):
-      direction="1"
-    self.SBRICK.Drive("000"+direction+self.twoDigitHex(self.pwm1.get()))
-
-    direction="0"
-    if( (self.pwm2.get() >= 0 and self.check2.get()==1) or
-        (self.pwm2.get() <  0 and self.check2.get()==0) ):
-      direction="1"
-    self.SBRICK.Drive("010"+direction+self.twoDigitHex(self.pwm2.get()))
-
-    direction="0"
-    if( (self.pwm3.get() >= 0 and self.check3.get()==1) or
-        (self.pwm3.get() <  0 and self.check3.get()==0) ):
-      direction="1"
-    self.SBRICK.Drive("020"+direction+self.twoDigitHex(self.pwm3.get()))
-
-    direction="0"
-    if( (self.pwm4.get() >= 0 and self.check4.get()==1) or
-        (self.pwm4.get() <  0 and self.check4.get()==0) ):
-      direction="1"
-    self.SBRICK.Drive("030"+direction+self.twoDigitHex(self.pwm4.get()))
+    for x in range(0, 4):
+      direction="0"
+      if( (self.pwms[x].get() >= 0 and self.checks[x].get()==1) or
+          (self.pwms[x].get() <  0 and self.checks[x].get()==0) ):
+        direction="1"
+      self.SBRICK.Drive("0"+ str(x) +"0"+direction+self.twoDigitHex(self.pwms[x].get()))
 
     return
                
