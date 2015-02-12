@@ -187,7 +187,7 @@ class Tool:
 
     OPTIONS = ['1', '2', '3', '4']
     var=StringVar(self.root)
-    var.set("0")
+    var.set("4")
     self.option = OptionMenu(self.root, var, *OPTIONS)
     self.option.grid(row=1,column=1)
 
@@ -201,11 +201,15 @@ class Tool:
 
   def Sync(self, *ignore):
     for x in range(0, self.optionNr):
-      direction="0"
-      if( (self.pwms[x].get() >= 0 and self.checks[x].get()==1) or
-          (self.pwms[x].get() <  0 and self.checks[x].get()==0) ):
-        direction="1"
-      self.SBRICK.Drive("0"+ str(x) +"0"+direction+self.twoDigitHex(self.pwms[x].get()))
+      direction="00"
+      speed=self.pwms[x].get()
+
+      if( (speed >= 0 and self.checks[x].get()==1) or
+          (speed <  0 and self.checks[x].get()==0) ):
+        direction="01"
+        speed=abs(speed)
+      
+      self.SBRICK.Drive("0"+ str(x) + direction + self.twoDigitHex(speed))
 
     return
                
