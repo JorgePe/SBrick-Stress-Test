@@ -28,7 +28,7 @@ class SBrick:
   # The SBrick firmware 4.2+ has a watchdog, after 500 ms it drops the BLE connection
   # so we need to keep talking to it
   # the value for PERIOD (in ms) is empirical - you may need to adjust
-  PERIOD = 330
+  PERIOD = 100
 
   ScaleMAX = 255
   ScaleMIN = 0
@@ -100,6 +100,12 @@ class SBrick:
       call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x001A --value=01" + Command, shell=True)
     return 0
 
+  def Stop (self, Command):
+    if (self.SBRICK_FW_VS == "4.0"):
+      call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x0025 --value=00" + Command, shell=True)
+    elif (self.SBRICK_FW_VS == "4.2"):
+      call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x001A --value=00" + Command, shell=True)
+    return 0
 
   def ReadTemp(self):
     if(self.SBRICK_FW_VS=="4.2"):
@@ -251,14 +257,14 @@ def print_help():
 
 def print_version():
   print('')
-  print('SBrick Stress Test Tool 0.4 - Jorge Pereira - February 2015')
+  print('SBrick Stress Test Tool 0.41 - Jorge Pereira - February 2015')
 
 
 def main(argv):
 
   BT_ADAPTER = ''
   SBRICK_ADDR = ''
-  PERIOD = ''
+  PERIOD = '100'
   
   try:
     opts, args = getopt.getopt(argv,"hva:d:p:")
@@ -298,6 +304,11 @@ def main(argv):
     # Oooops! Hate this part! Lot of work to do...
     traceback.print_exc(file=sys.stdout)
 
+  # better stop all ports before exit than leaving it to the watchdog
+  SBRICK.Stop("01")
+  SBRICK.Stop("02")
+  SBRICK.Stop("03")
+  SBRICK.Stop("04")
 
   sys.exit(EXIT_OK)
 
