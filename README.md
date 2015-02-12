@@ -19,11 +19,15 @@ The «period» value of 100 may be reduced a bit to achieve slightly better late
 
 This tool also implements a checkbox for each of the 4 ports to toggle the direction of the DRIVE commands.
 
-Please note that the temperature values are read from a sensor inside the SBrick BLE chipset - other parts of the SBrick, especially the power drivers and the electrical connection WILL BE hotter. I achieved to melt a bit of plastic around the power pins of my Stress Test SBrick with temperature readins around 70ºC (overall current ~7A)
+Please note that the temperature values are read from a sensor inside the SBrick BLE chipset - other parts of the SBrick, especially the power drivers and the electrical connection WILL BE hotter. I achieved to melt a bit of plastic around the power pins of my Stress Test SBrick with temperature readings ~70ºC (overall current ~7A)
 
 The SBrick can work with low voltages, I've used it with 3.7V LiPo batteries without issues. But with high loads internal voltage will drop, even if you use excellent high current batteries. If internal voltage drops bellow 3.3~3.5V the SBrick turns off.
 
 Also please note that I do not consider myself a good programmer (some weeks ago not even A programmer!). 
 I want to thank [szigetigabor](https://github.com/szigetigabor) for polishing my code.
+
+There will be future improvements to this tool so it will become more like an SBrick Controller than a Stress Tester.
+I'm already working in a way to chose the number of slide bars [1 to 4 instead of always 4] and which ports are controlled with which slide (so we can drive more than one LEGO 9V RC motors with just one slide).
+Soon it will also be possible to associate the slide bars with keyboard keys or gamepad controls.
 
 That said... please do have fun :)
