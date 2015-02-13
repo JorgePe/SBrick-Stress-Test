@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from subprocess import call, check_output, CalledProcessError
-import sys, traceback, os, getopt
+import sys, traceback, os
 
 EXIT_HW   = 4
 EXIT_FW   = 5
