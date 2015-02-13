@@ -71,10 +71,7 @@ def main(argv):
     traceback.print_exc(file=sys.stdout)
 
   # better stop all ports before exit than leaving it to the watchdog
-  SBRICK.Stop("01")
-  SBRICK.Stop("02")
-  SBRICK.Stop("03")
-  SBRICK.Stop("04")
+  SBRICK.Stop()
 
   sys.exit(EXIT_OK)
 

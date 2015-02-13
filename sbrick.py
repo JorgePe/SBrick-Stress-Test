@@ -91,7 +91,12 @@ class SBrick:
     call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x00"+self.handle+" --value="+ operation + Command, shell=True)
     return 0
 
-  def Stop (self, Command):
+  def Stop (self, Command="all"):
+    if (Command == "all"):
+      for x in range(1,5):
+        self.Drive("0"+str(x), "00")
+      return 0;
+
     self.Drive(Command, "00")
     return 0
 
