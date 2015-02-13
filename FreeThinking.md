@@ -6,6 +6,7 @@ PERIOD is a property of the SBrick but it should be a property of the Tool itsel
 When I have time will test how to read the defined Watchdog and set it as a property of the SBrick.
 
 Mapping SBrick Ports to Slide Bars (Scales)
+
 I think each Slide should have a list of associated Ports. In theory, these Ports should be objects or properties of the SBrick.
 But can be just 4 boolean values (1 for each port) and use some extra logic to assure only one port is true for all Slides.
 
