@@ -57,10 +57,10 @@ def main(argv):
     if( BT_ADAPTER=='')or(SBRICK_ADDR=='')or(PERIOD==''):
       print_help()
       sys.exit(EXIT_ARGS)
-    else:
-      print('')
-      print('sbstress - SBrick Stress Test Tool')
-      SBRICK = SBrick(BT_ADAPTER, SBRICK_ADDR, PERIOD)
+
+    print('')
+    print('sbstress - SBrick Stress Test Tool')
+    SBRICK = SBrick(BT_ADAPTER, SBRICK_ADDR, PERIOD)
 
     tool = Tool(SBRICK)
     tool.root.after(PERIOD,tool.refresh)
