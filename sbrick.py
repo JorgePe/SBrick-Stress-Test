@@ -93,7 +93,7 @@ class SBrick:
 
   def Stop (self, Command="all"):
     if (Command == "all"):
-      for x in range(1,5):
+      for x in range(0,4):
         self.Drive("0"+str(x), "00")
       return 0;
 
