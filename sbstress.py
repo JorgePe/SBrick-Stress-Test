@@ -95,6 +95,9 @@ class SBrick:
 
   def Drive (self, Command):
     if (self.SBRICK_FW_VS == "4.0"):
+      if (Command[-2:] == "ff"):
+        Command=Command[:-1]+Command[-1:].replace("f", "e")
+
       call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x0025 --value=01" + Command, shell=True)
     elif (self.SBRICK_FW_VS == "4.2"):
       call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x001A --value=01" + Command, shell=True)
