@@ -106,7 +106,7 @@ class Tool:
 
   def refresh(self):
     self.temp.set(self.SBRICK.ReadTemp())
-    self.volt.set(self.SBRICK.ReadVolt()) 
+    self.volt.set(self.SBRICK.ReadVolt())
     self.root.after(self.SBRICK.GetPeriod(),self.refresh)  # reschedule event
     self.Sync()
 
