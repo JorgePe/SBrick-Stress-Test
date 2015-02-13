@@ -1,6 +1,7 @@
 Just some random thoughts:
 
 PERIOD
+
 PERIOD is a property of the SBrick but it should be a property of the Tool itself since we can choose its value, we just shouldn't use a PERIOD bigger than the defined Watchdog.
 When I have time will test how to read the defined Watchdog and set it as a property of the SBrick.
 
@@ -9,6 +10,7 @@ I think each Slide should have a list of associated Ports. In theory, these Port
 But can be just 4 boolean values (1 for each port) and use some extra logic to assure only one port is true for all Slides.
 
 OPTIONS
+
 Other options could be set in GUI:
 - PERIOD
 - MAX,MIN and RESOLUTION for the Slide Bars (perhaps even LINEAR or LOGARITHMIC scales)
