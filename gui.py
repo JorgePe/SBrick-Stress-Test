@@ -41,6 +41,14 @@ class Tool:
     self.nr_slides.set(4)
     self.nr_slides_copy=4
 
+    # each slide has a list 4 boolean values (True or False for each port it controls)
+    # have to assure somewhere else that a port is only True once
+    self.slide1= [True,False,False,False]
+    self.slide2= [False,True,False,False]
+    self.slide3= [False,False,True,False]
+    self.slide4= [False,False,False,True]
+    self.slides= [self.slide1,self.slide2,self.slide3,self.slide4]
+
     self.pwm1.set(0)
     self.pwm2.set(0)
     self.pwm3.set(0)
@@ -65,13 +73,15 @@ class Tool:
 
     self.draw_slides()
 
-    LabelQuit=Label(self.root, height=1, pady=10)	# just a separator
-    LabelQuit.grid(row=4)
-    Button_QUIT = Button(text = "QUIT", command = self.quit)
-    Button_QUIT.grid(row=5, column=1, columnspan=2)
+    LabelBreak=Label(self.root, height=1, pady=10)	# just a separator
+    LabelBreak.grid(row=7)
 
     Button_Options=Button(self.root,text='Options',command=self.Options)
-    Button_Options.grid(row=6,column=1)
+    Button_Options.grid(row=8,column=0)
+
+    Button_QUIT = Button(text = "QUIT", command = self.quit)
+    Button_QUIT.grid(row=8, column=1)
+
 
   def twoDigitHex(self,number):
       return '%02x' % number
@@ -80,11 +90,15 @@ class Tool:
   def draw_slides(self):
 
     for x in range(0, self.nr_slides.get()):
-      CheckPort=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(x+1), padx=50, pady=10)
-      CheckPort.grid(row=2,column=x)
+      count=0
+      for i in range(0,4):
+        if(self.slides[x][i]==True):
+          CheckPort=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(x+1), padx=50, pady=10)
+          CheckPort.grid(row=2+count,column=x)
+          count+=1
 
       Port = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=5, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
-      Port.grid(row=3,column=x)
+      Port.grid(row=6,column=x)
 
     self.nr_slides_copy=self.nr_slides.get()
 
@@ -112,10 +126,9 @@ class Tool:
 
     if(self.nr_slides.get()<>self.nr_slides_copy):
       # remove all scales and checkbuttons
-      for slaves in self.root.grid_slaves(row=2):
-        slaves.grid_remove()
-      for slaves in self.root.grid_slaves(row=3):
-        slaves.grid_remove()
+      for r in range(2,7):
+        for slaves in self.root.grid_slaves(row=r):
+          slaves.grid_remove()
 
       # reset pwm of removed scales so we don't have surprises if ever put scales back
       for x in range(self.nr_slides.get(),4):
@@ -128,11 +141,11 @@ class Tool:
 
   def Options(self):
     self.newWindow = Toplevel(self.root)
-    self.config = Config(self.newWindow,self.nr_slides)
+    self.config = Config(self.newWindow,self.nr_slides,self.slides)
 
 
 class Config:
-  def __init__(self, root, nr_slides):
+  def __init__(self, root, nr_slides, slides):
     self.root = root
 
     self.num = IntVar()
@@ -148,60 +161,58 @@ class Config:
     self.Port2 = IntVar()
     self.Port3 = IntVar()
     self.Port4 = IntVar()
+    self.Ports = [self.Port1,self.Port2,self.Port3,self.Port4]
 
     self.labelBreak=Label(self.root, height=1, pady=10)	# just a separator
     self.labelBreak.grid(row=1)
 
-    # Line 2 and 3: Slide1
-    self.LabelSlide1=Label(self.root,text="Slide #1 controls which Ports?")
-    self.LabelSlide1.grid(row=2,column=0,columnspan=4)
 
-    self.RadioSlide1Port1=Radiobutton(self.root,text="1", variable=self.Port1,value=11)
-    self.RadioSlide1Port1.grid(row=3,column=0)
-    self.RadioSlide1Port2=Radiobutton(self.root,text="2", variable=self.Port2,value=12)
-    self.RadioSlide1Port2.grid(row=3,column=1)
-    self.RadioSlide1Port3=Radiobutton(self.root,text="3", variable=self.Port3,value=13)
-    self.RadioSlide1Port3.grid(row=3,column=2)
-    self.RadioSlide1Port4=Radiobutton(self.root,text="4", variable=self.Port4,value=14)
-    self.RadioSlide1Port4.grid(row=3,column=3)
+    self.LabelSlide1=Label()
+    self.LabelSlide2=Label()
+    self.LabelSlide3=Label()
+    self.LabelSlide4=Label()
+    self.LabelSlides=[self.LabelSlide1,self.LabelSlide2,self.LabelSlide3,self.LabelSlide4]
+
+    self.RadioSlide11=Radiobutton()
+    self.RadioSlide12=Radiobutton()
+    self.RadioSlide13=Radiobutton()
+    self.RadioSlide14=Radiobutton()
+    self.RadioSlideRow1=[self.RadioSlide11,self.RadioSlide12,self.RadioSlide13,self.RadioSlide14]
+
+    self.RadioSlide21=Radiobutton()
+    self.RadioSlide22=Radiobutton()
+    self.RadioSlide23=Radiobutton()
+    self.RadioSlide24=Radiobutton()
+    self.RadioSlideRow2=[self.RadioSlide21,self.RadioSlide22,self.RadioSlide23,self.RadioSlide24]
+
+    self.RadioSlide31=Radiobutton()
+    self.RadioSlide32=Radiobutton()
+    self.RadioSlide33=Radiobutton()
+    self.RadioSlide34=Radiobutton()
+    self.RadioSlideRow3=[self.RadioSlide31,self.RadioSlide32,self.RadioSlide33,self.RadioSlide34]
+
+    self.RadioSlide41=Radiobutton()
+    self.RadioSlide42=Radiobutton()
+    self.RadioSlide43=Radiobutton()
+    self.RadioSlide44=Radiobutton()
+    self.RadioSlideRow4=[self.RadioSlide41,self.RadioSlide42,self.RadioSlide43,self.RadioSlide44]
+
+    self.RadioSlideMatrix=[self.RadioSlideRow1,self.RadioSlideRow2,self.RadioSlideRow3,self.RadioSlideRow4]
+
+    for x in range(0, self.num.get()):
+      self.LabelSlides[x]=Label(self.root,text="Slide #"+str(x+1)+" controls which Ports?")
+      self.LabelSlides[x].grid(row=2+2*x,column=0,columnspan=4)
+      for i in range(0,4):
+        self.RadioSlideMatrix[x][i]=Radiobutton(self.root,text=str(i), variable=self.Ports[i])
+        self.RadioSlideMatrix[x][i].grid(row=3+2*x,column=i)
+#        if(slides[x][i]==True):
+#          self.RadioSlideMatrix[x][i].select()
+#        else:
+#          print("Uh!")
+#          self.RadioSlideMatrix[x][i].deselect()
+        self.RadioSlideMatrix[x][i].deselect()
 
 
-    # Line 4 and 5: Slide2
-    self.LabelSlide2=Label(self.root,text="Slide #2 controls which Ports?")
-    self.LabelSlide2.grid(row=4,column=0,columnspan=4)
-    self.RadioSlide2Port1=Radiobutton(self.root,text="1", variable=self.Port1,value=21)
-    self.RadioSlide2Port1.grid(row=5,column=0)
-    self.RadioSlide2Port2=Radiobutton(self.root,text="2", variable=self.Port2,value=22)
-    self.RadioSlide2Port2.grid(row=5,column=1)
-    self.RadioSlide2Port3=Radiobutton(self.root,text="3", variable=self.Port3,value=23)
-    self.RadioSlide2Port3.grid(row=5,column=2)
-    self.RadioSlide2Port4=Radiobutton(self.root,text="4", variable=self.Port4,value=24)
-    self.RadioSlide2Port4.grid(row=5,column=3)
-
-
-    # Line 6 and 7: Slide3
-    self.LabelSlide3=Label(self.root,text="Slide #3 controls which Ports?")
-    self.LabelSlide3.grid(row=6,column=0,columnspan=4)
-    self.RadioSlide3Port1=Radiobutton(self.root,text="1", variable=self.Port1,value=31)
-    self.RadioSlide3Port1.grid(row=7,column=0)
-    self.RadioSlide3Port2=Radiobutton(self.root,text="2", variable=self.Port2,value=32)
-    self.RadioSlide3Port2.grid(row=7,column=1)
-    self.RadioSlide3Port3=Radiobutton(self.root,text="3", variable=self.Port3,value=33)
-    self.RadioSlide3Port3.grid(row=7,column=2)
-    self.RadioSlide3Port4=Radiobutton(self.root,text="4", variable=self.Port4,value=34)
-    self.RadioSlide3Port4.grid(row=7,column=3)
-
-    # Line 8 and 9: Slide4
-    self.LabelSlide4=Label(self.root,text="Slide #4 controls which Ports?")
-    self.LabelSlide4.grid(row=8,column=0,columnspan=4)
-    self.RadioSlide4Port1=Radiobutton(self.root,text="1", variable=self.Port1,value=41)
-    self.RadioSlide4Port1.grid(row=9,column=0)
-    self.RadioSlide4Port2=Radiobutton(self.root,text="2", variable=self.Port2,value=42)
-    self.RadioSlide4Port2.grid(row=9,column=1)
-    self.RadioSlide4Port3=Radiobutton(self.root,text="3", variable=self.Port3,value=43)
-    self.RadioSlide4Port3.grid(row=9,column=2)
-    self.RadioSlide4Port4=Radiobutton(self.root,text="4", variable=self.Port4,value=44)
-    self.RadioSlide4Port4.grid(row=9,column=3)
 
     self.labelBreak2=Label(self.root, height=1, pady=10)	# just a separator
     self.labelBreak2.grid(row=10)
@@ -214,68 +225,27 @@ class Config:
   def RemapSlides(self, *ignore):	# don't know why must put *ignore here
     num_slides=self.num.get()
 
-    if(num_slides==1):
-      self.RadioSlide2Port1.config(state=DISABLED)
-      self.RadioSlide2Port2.config(state=DISABLED)
-      self.RadioSlide2Port3.config(state=DISABLED)
-      self.RadioSlide2Port4.config(state=DISABLED)
-
-      self.RadioSlide3Port1.config(state=DISABLED)
-      self.RadioSlide3Port2.config(state=DISABLED)
-      self.RadioSlide3Port3.config(state=DISABLED)
-      self.RadioSlide3Port4.config(state=DISABLED)
-
-      self.RadioSlide4Port1.config(state=DISABLED)
-      self.RadioSlide4Port2.config(state=DISABLED)
-      self.RadioSlide4Port3.config(state=DISABLED)
-      self.RadioSlide4Port4.config(state=DISABLED)
-
-    elif(num_slides==2):
-      self.RadioSlide2Port1.config(state=NORMAL)
-      self.RadioSlide2Port2.config(state=NORMAL)
-      self.RadioSlide2Port3.config(state=NORMAL)
-      self.RadioSlide2Port4.config(state=NORMAL)
-
-      self.RadioSlide3Port1.config(state=DISABLED)
-      self.RadioSlide3Port2.config(state=DISABLED)
-      self.RadioSlide3Port3.config(state=DISABLED)
-      self.RadioSlide3Port4.config(state=DISABLED)
-
-      self.RadioSlide4Port1.config(state=DISABLED)
-      self.RadioSlide4Port2.config(state=DISABLED)
-      self.RadioSlide4Port3.config(state=DISABLED)
-      self.RadioSlide4Port4.config(state=DISABLED)
-
-    elif(num_slides==3):
-      self.RadioSlide2Port1.config(state=NORMAL)
-      self.RadioSlide2Port2.config(state=NORMAL)
-      self.RadioSlide2Port3.config(state=NORMAL)
-      self.RadioSlide2Port4.config(state=NORMAL)
-
-      self.RadioSlide3Port1.config(state=NORMAL)
-      self.RadioSlide3Port2.config(state=NORMAL)
-      self.RadioSlide3Port3.config(state=NORMAL)
-      self.RadioSlide3Port4.config(state=NORMAL)
-
-      self.RadioSlide4Port1.config(state=DISABLED)
-      self.RadioSlide4Port2.config(state=DISABLED)
-      self.RadioSlide4Port3.config(state=DISABLED)
-      self.RadioSlide4Port4.config(state=DISABLED)
-    else:
-      self.RadioSlide2Port1.config(state=NORMAL)
-      self.RadioSlide2Port2.config(state=NORMAL)
-      self.RadioSlide2Port3.config(state=NORMAL)
-      self.RadioSlide2Port4.config(state=NORMAL)
-
-      self.RadioSlide3Port1.config(state=NORMAL)
-      self.RadioSlide3Port2.config(state=NORMAL)
-      self.RadioSlide3Port3.config(state=NORMAL)
-      self.RadioSlide3Port4.config(state=NORMAL)
-
-      self.RadioSlide4Port1.config(state=NORMAL)
-      self.RadioSlide4Port2.config(state=NORMAL)
-      self.RadioSlide4Port3.config(state=NORMAL)
-      self.RadioSlide4Port4.config(state=NORMAL)
+    for i in range(0,4):
+      if(num_slides==1):
+        self.RadioSlideRow1[i].config(state=NORMAL)
+        self.RadioSlideRow2[i].config(state=DISABLED)
+        self.RadioSlideRow3[i].config(state=DISABLED)
+        self.RadioSlideRow4[i].config(state=DISABLED)
+      elif(num_slides==2):
+        self.RadioSlideRow1[i].config(state=NORMAL)
+        self.RadioSlideRow2[i].config(state=NORMAL)
+        self.RadioSlideRow3[i].config(state=DISABLED)
+        self.RadioSlideRow4[i].config(state=DISABLED)
+      elif(num_slides==3):
+        self.RadioSlideRow1[i].config(state=NORMAL)
+        self.RadioSlideRow2[i].config(state=NORMAL)
+        self.RadioSlideRow3[i].config(state=NORMAL)
+        self.RadioSlideRow4[i].config(state=DISABLED)
+      else:
+        self.RadioSlideRow1[i].config(state=NORMAL)
+        self.RadioSlideRow2[i].config(state=NORMAL)
+        self.RadioSlideRow3[i].config(state=NORMAL)
+        self.RadioSlideRow4[i].config(state=NORMAL)
     return
 
 
