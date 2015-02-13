@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from subprocess import call, check_output, CalledProcessError
 import sys, traceback, os
+from time import sleep
 
 EXIT_HW   = 4
 EXIT_FW   = 5
