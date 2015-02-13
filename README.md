@@ -24,12 +24,11 @@ Please note that the temperature values are read from a sensor inside the SBrick
 The SBrick can work with low voltages, I've used it with 3.7V LiPo batteries without issues. But with high loads internal voltage will drop, even if you use excellent high current batteries. If internal voltage drops bellow 3.3~3.5V the SBrick turns off.
 
 Also please note that I do not consider myself a good programmer (some weeks ago not even A programmer!). 
-I want to thank [szigetigabor](https://github.com/szigetigabor) for polishing my code.
+I want to thank [szigetigabor](https://github.com/szigetigabor) for polishing and improving the original code.
 
 There will be future improvements to this tool so it will become more like an SBrick Controller than a Stress Tester.
-I'm already working in:
-- a way to chose the number of slide bars [1 to 4 instead of always 4] and which ports are controlled with which slide (so we can drive more than one LEGO 9V RC motors with just one slide)
-- custom ranges instead of just 0..255
-Soon it will also be possible to associate the slide bars with keyboard keys or gamepad controls.
+We are already working in a way to chose the number of slide bars [1 to 4 instead of always 4] and which ports are controlled with which slide (so we can drive more than one LEGO 9V RC motors with just one slide)
+
+Soon it will also be possible to associate the slide bars with keyboard keys and/or gamepad controls.
 
 That said... please do have fun :)
