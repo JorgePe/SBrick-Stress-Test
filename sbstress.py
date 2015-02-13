@@ -37,6 +37,7 @@ class SBrick:
     self.BT_ADAPTER = adapter
     self.SBRICK = sbrick
     self.PERIOD = period
+    self.handle = ''
 
     print(' Adapter:    ', self.BT_ADAPTER)
     print(' Device:     ', self.SBRICK)
@@ -70,9 +71,11 @@ class SBrick:
       print("Will use SBrick firmware 4.0 handles")
       print("Will limit values to 0..FE as FF doesn't work")
       self.ScaleMAX = 254
+      self.handle = "25"
     elif(self.SBRICK_FW_VS == "4.2"):
       print("Will use SBrick firmware 4.2 handles")
       self.ScaleMAX = 255
+      self.handle = "1A"
     else:
       print("Don't know how to handle this firmware version")
       sys.exit(EXIT_FWID)
@@ -93,28 +96,22 @@ class SBrick:
   def GetPeriod (self):
      return self.PERIOD
 
-  def Drive (self, Command):
-    if (self.SBRICK_FW_VS == "4.0"):
-      if (Command[-2:] == "ff"):
-        Command=Command[:-1]+Command[-1:].replace("f", "e")
+  def Drive (self, Command, operation="01"):
+    if (self.SBRICK_FW_VS == "4.0" and Command[-2:] == "ff"):
+      Command=Command[:-1]+Command[-1:].replace("f", "e")
 
-      call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x0025 --value=01" + Command, shell=True)
-    elif (self.SBRICK_FW_VS == "4.2"):
-      call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x001A --value=01" + Command, shell=True)
+    call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x00"+self.handle+" --value="+ operation + Command, shell=True)
     return 0
 
   def Stop (self, Command):
-    if (self.SBRICK_FW_VS == "4.0"):
-      call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x0025 --value=00" + Command, shell=True)
-    elif (self.SBRICK_FW_VS == "4.2"):
-      call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x001A --value=00" + Command, shell=True)
+    self.Drive(Command, "00")
     return 0
 
   def ReadTemp(self):
     if(self.SBRICK_FW_VS=="4.2"):
-      call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x001A --value=0F0E",shell=True)
+      call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x00"+self.handle+" --value=0F0E",shell=True)
       sleep(0.01)
-      result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x001A",shell=True).split(" ")
+      result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x00"+self.handle,shell=True).split(" ")
       t=( int(result[3]+result[2], 16) ) * 0.008413396 - 160
 
       return("{0:.1f}".format(t)+" C")
@@ -124,9 +121,9 @@ class SBrick:
 
   def ReadVolt(self):
     if(self.SBRICK_FW_VS=="4.2"):
-      call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x001A --value=0F00",shell=True)
+      call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x00"+self.handle+" --value=0F00",shell=True)
       sleep(0.01)
-      result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x001A",shell=True).split(" ")
+      result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x00"+self.handle,shell=True).split(" ")
       v=( int(result[3]+result[2], 16) ) * 0.000378603  
 
       return("{0:.1f}".format(v)+" V")
