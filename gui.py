@@ -140,6 +140,8 @@ class Tool:
 
 
   def Options(self):
+
+    # NOTE: at this moment it is possible to open multiple new windows
     self.newWindow = Toplevel(self.root)
     self.config = Config(self.newWindow,self.nr_slides,self.slides)
 
@@ -203,14 +205,14 @@ class Config:
       self.LabelSlides[x]=Label(self.root,text="Slide #"+str(x+1)+" controls which Ports?")
       self.LabelSlides[x].grid(row=2+2*x,column=0,columnspan=4)
       for i in range(0,4):
-        self.RadioSlideMatrix[x][i]=Radiobutton(self.root,text=str(i), variable=self.Ports[i])
+        self.RadioSlideMatrix[x][i]=Radiobutton(self.root,text=str(i), variable=self.Ports[i], value=x*10+i)
         self.RadioSlideMatrix[x][i].grid(row=3+2*x,column=i)
-#        if(slides[x][i]==True):
-#          self.RadioSlideMatrix[x][i].select()
-#        else:
+        if(slides[x][i]==True):
+          self.RadioSlideMatrix[x][i].select()
+        else:
 #          print("Uh!")
-#          self.RadioSlideMatrix[x][i].deselect()
-        self.RadioSlideMatrix[x][i].deselect()
+          self.RadioSlideMatrix[x][i].deselect()
+#        self.RadioSlideMatrix[x][i].deselect()
 
 
 
