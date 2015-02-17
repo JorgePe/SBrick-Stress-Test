@@ -71,11 +71,9 @@ class Tool:
     LabelBreak.grid(row=0)
 
     LabelTemperature=Label(self.root, textvariable=self.temp, font=(FONT_TYPE, FONT_SIZE))
-#    LabelTemperature.grid(row=0, column=1)
     LabelTemperature.place(relx=0.3, rely=0.05, anchor=CENTER)
 
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
-#    LabelVoltage.grid(row=0, column=2)
     LabelVoltage.place(relx=0.7, rely=0.05, anchor=CENTER)
 
 
@@ -85,19 +83,16 @@ class Tool:
     LabelBreak.grid(row=7)
 
     Button_STOP = Button(text = "STOP all ports", command = self.ports_stop)
-    Button_STOP.grid(row=8, column=1)
+    Button_STOP.place(relx=0.5, rely=0.9, anchor=CENTER)
 
-    LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
+    LabelBreak=Label(self.root, height=1, pady=25)	# just a separator
     LabelBreak.grid(row=9)
 
     Button_Options=Button(self.root,text='Options',command=self.Options)
-    Button_Options.grid(row=10,column=0)
+    Button_Options.place(relx=0.3,rely=0.95,anchor=CENTER)
 
     Button_QUIT = Button(text = "QUIT", command = self.quit)
-    Button_QUIT.grid(row=10, column=1)
-
-    LabelBreak=Label(self.root, height=1, pady=1)	# just a separator
-    LabelBreak.grid(row=11)
+    Button_QUIT.place(relx=0.7,rely=0.95,anchor=CENTER)
 
 
   def twoDigitHex(self,number):
