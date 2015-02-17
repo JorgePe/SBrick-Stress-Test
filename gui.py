@@ -52,12 +52,14 @@ class Tool:
     self.configchanged=BooleanVar()
     self.configchanged.set(False)
 
+    # NOTE: pwm is a property of the slide bar
     self.pwm1.set(0)
     self.pwm2.set(0)
     self.pwm3.set(0)
     self.pwm4.set(0)
     self.pwms = [self.pwm1, self.pwm2, self.pwm3, self.pwm4]
  
+    # NOTE: check is now a property of the port, not of the slide
     self.check1=IntVar()
     self.check1.set(0)
     self.check2=IntVar()
@@ -92,15 +94,13 @@ class Tool:
 
   def draw_slides(self):
 
-# still need to print the correct ports for each slide
-
     print (self.slides)
 
     for x in range(0, self.nr_slides.get()):
       count=0
       for i in range(0,4):
         if(self.slides[x][i]==True):
-          CheckPort=Checkbutton(self.root, variable = self.checks[x],takefocus=1, text="Port #"+str(i+1), padx=50, pady=10)
+          CheckPort=Checkbutton(self.root, variable = self.checks[i],takefocus=1, text="Port #"+str(i+1), padx=50, pady=10)
           CheckPort.grid(row=2+count,column=x)
           count+=1
 
@@ -111,16 +111,43 @@ class Tool:
 
   def Sync(self, *ignore):
 
-# still need to send the commands to the right ports for each slide
+    # one slide may control several ports
 
     for x in range(0, self.nr_slides.get()):
-      direction="00"
+
       speed=self.pwms[x].get()
-      if( (speed >= 0 and self.checks[x].get()==1) or
-          (speed <  0 and self.checks[x].get()==0) ):
-        direction="01"
-        speed=abs(speed)    
-      self.SBRICK.Drive("0"+ str(x) + direction + self.twoDigitHex(speed))
+
+      if (self.slides[x][0]==True):
+         # port #1
+        direction="00"
+        if( (speed >= 0 and self.checks[0].get()==1) or
+            (speed <  0 and self.checks[0].get()==0) ):
+          direction="01"
+        self.SBRICK.Drive("00" + direction + self.twoDigitHex(abs(speed)))
+
+      if (self.slides[x][1]==True):
+         # port #2
+        direction="00"
+        if( (speed >= 0 and self.checks[1].get()==1) or
+            (speed <  0 and self.checks[1].get()==0) ):
+          direction="01"
+        self.SBRICK.Drive("01" + direction + self.twoDigitHex(abs(speed)))
+
+      if (self.slides[x][2]==True):
+         # port #3
+        direction="00"
+        if( (speed >= 0 and self.checks[2].get()==1) or
+            (speed <  0 and self.checks[2].get()==0) ):
+          direction="01"
+        self.SBRICK.Drive("02" + direction + self.twoDigitHex(abs(speed)))
+
+      if (self.slides[x][3]==True):
+         # port #4
+        direction="00"
+        if( (speed >= 0 and self.checks[3].get()==1) or
+            (speed <  0 and self.checks[3].get()==0) ):
+          direction="01"
+        self.SBRICK.Drive("03" + direction + self.twoDigitHex(abs(speed)))
     return
                
   def quit(self):
@@ -129,8 +156,6 @@ class Tool:
 
 
   def refresh(self):
-
-# still need to print the correct ports for each slide
 
     self.temp.set(self.SBRICK.ReadTemp())
     self.volt.set(self.SBRICK.ReadVolt())
@@ -166,6 +191,9 @@ class Config(Tool):
     self.num = tool.nr_slides
     self.slides=tool.slides
     self.configchanged=tool.configchanged
+
+    # NOTE: really no need to choose number of slides,
+    # just don't draw a slide if it has no ports assigned
 
     OPTIONS = ['1', '2', '3', '4']
     self.labelNrSlides=Label(self.root,text="Number of Slides:")
