@@ -83,9 +83,9 @@ class Tool:
     row+=1
 
     self.draw_slides(row)
-    row+=6
+    row+=8
 
-    LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
+    LabelBreak=Label(self.root, height=1, pady=10)	# just a separator
     LabelBreak.grid(row=row)
     row+=1
 
