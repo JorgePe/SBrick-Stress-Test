@@ -117,37 +117,15 @@ class Tool:
 
       speed=self.pwms[x].get()
 
-      if (self.slides[x][0]==True):
-         # port #1
-        direction="00"
-        if( (speed >= 0 and self.checks[0].get()==1) or
-            (speed <  0 and self.checks[0].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("00" + direction + self.twoDigitHex(abs(speed)))
+      for i in range(0, 4):
+        # update all ports
+        if (self.slides[x][i]==True):
+          direction="00"
+          if( (speed >= 0 and self.checks[1].get()==1) or
+              (speed <  0 and self.checks[1].get()==0) ):
+            direction="01"
+          self.SBRICK.Drive("0"+ str(i) + direction + self.twoDigitHex(abs(speed)))
 
-      if (self.slides[x][1]==True):
-         # port #2
-        direction="00"
-        if( (speed >= 0 and self.checks[1].get()==1) or
-            (speed <  0 and self.checks[1].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("01" + direction + self.twoDigitHex(abs(speed)))
-
-      if (self.slides[x][2]==True):
-         # port #3
-        direction="00"
-        if( (speed >= 0 and self.checks[2].get()==1) or
-            (speed <  0 and self.checks[2].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("02" + direction + self.twoDigitHex(abs(speed)))
-
-      if (self.slides[x][3]==True):
-         # port #4
-        direction="00"
-        if( (speed >= 0 and self.checks[3].get()==1) or
-            (speed <  0 and self.checks[3].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("03" + direction + self.twoDigitHex(abs(speed)))
     return
                
   def quit(self):
