@@ -1,4 +1,4 @@
-# SBrick-Stress-Test v0.41
+# SBrick-Stress-Test v0.50
 
 Python script to test the limits of Vengit SBrick from linux system using BlueZ 5 gatttool
 
@@ -27,8 +27,6 @@ Also please note that I do not consider myself a good programmer (some weeks ago
 I want to thank [szigetigabor](https://github.com/szigetigabor) for polishing and improving the original code.
 
 There will be future improvements to this tool so it will become more like an SBrick Controller than a Stress Tester.
-We are already working in a way to chose the number of slide bars [1 to 4 instead of always 4] and which ports are controlled with which slide (so we can drive more than one LEGO 9V RC motors with just one slide)
-
 Soon it will also be possible to associate the slide bars with keyboard keys and/or gamepad controls.
 
 That said... please do have fun :)
