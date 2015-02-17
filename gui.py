@@ -37,10 +37,7 @@ class Tool:
     self.temp.set("00.0")
     self.volt.set("0.0")
 
-    self.nr_slides = IntVar()	# number of slide bars to use
-    self.nr_slides.set(4)
-    self.nr_slides_copy=4
-
+    # port mapping:
     # each slide has a list 4 boolean values (True or False for each port it controls)
     # have to assure somewhere else that a port is only True once
     self.slide1= [True,False,False,False]
@@ -52,7 +49,7 @@ class Tool:
     self.configchanged=BooleanVar()
     self.configchanged.set(False)
 
-    # NOTE: pwm is a property of the slide bar
+    # NOTE: pwm is a property of the slide bar (but it should be of the port)
     self.pwm1.set(0)
     self.pwm2.set(0)
     self.pwm3.set(0)
@@ -94,27 +91,26 @@ class Tool:
 
   def draw_slides(self):
 
-    print (self.slides)
-
-    for x in range(0, self.nr_slides.get()):
+    col=0
+    for x in range(0,4):
       count=0
       for i in range(0,4):
         if(self.slides[x][i]==True):
           CheckPort=Checkbutton(self.root, variable = self.checks[i],takefocus=1, text="Port #"+str(i+1), padx=50, pady=10)
-          CheckPort.grid(row=2+count,column=x)
+          CheckPort.grid(row=2+count,column=col)
           count+=1
 
-      Port = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=5, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
-      Port.grid(row=6,column=x)
+      if(count>0):
+       Port = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=5, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
+       Port.grid(row=6,column=col)
+       col+=1
 
-    self.nr_slides_copy=self.nr_slides.get()
 
   def Sync(self, *ignore):
 
-    # one slide may control several ports
+    # one slide may now control several ports
 
-    for x in range(0, self.nr_slides.get()):
-
+    for x in range(0,4):
       speed=self.pwms[x].get()
 
       if (self.slides[x][0]==True):
@@ -162,25 +158,29 @@ class Tool:
     self.root.after(self.SBRICK.GetPeriod(),self.refresh)  # reschedule event
     self.Sync()
 
-#    if(self.nr_slides.get()<>self.nr_slides_copy):
     if(self.configchanged.get() == True):
       # remove all scales and checkbuttons
       for r in range(2,7):
         for slaves in self.root.grid_slaves(row=r):
           slaves.grid_remove()
 
-      # reset pwm of removed scales so we don't have surprises if ever put scales back
-      for x in range(self.nr_slides.get(),4):
+      # reset al scale values - if we want "memory" we should make pwm a
+      # property of the port (not a property of the scale)
+      # and when redrawing scales read pwm from the ports and set the scales again
+      # but don't know what to do when 2 ports with different pwm values are mapped
+      # to the same scale
+
+      for x in range(0,4):
         self.SBRICK.Stop("0"+str(x))
         self.pwms[x].set(0)      
 
-      # redraw
+      # redraw it all
       self.draw_slides()
       self.configchanged.set(False)
 
   def Options(self):
 
-    # NOTE: at this moment it is possible to open multiple new windows
+    # NOTE: it is possible to open multiple new windows - it shouldn't
     self.newWindow = Toplevel(self.root)
     self.config = Config(self.newWindow,self)
 
@@ -188,28 +188,14 @@ class Tool:
 class Config(Tool):
   def __init__(self, root, tool):
     self.root = root
-    self.num = tool.nr_slides
     self.slides=tool.slides
     self.configchanged=tool.configchanged
-
-    # NOTE: really no need to choose number of slides,
-    # just don't draw a slide if it has no ports assigned
-
-    OPTIONS = ['1', '2', '3', '4']
-    self.labelNrSlides=Label(self.root,text="Number of Slides:")
-    self.labelNrSlides.grid(row=0,column=0,columnspan=2)
-    self.optionNrSlides = OptionMenu(self.root, self.num, *OPTIONS, command=self.RemapSlides)
-    self.optionNrSlides.grid(row=0,column=3)
 
     self.Port1 = IntVar()
     self.Port2 = IntVar()
     self.Port3 = IntVar()
     self.Port4 = IntVar()
     self.Ports = [self.Port1,self.Port2,self.Port3,self.Port4]
-
-    self.labelBreak=Label(self.root, height=1, pady=10)	# just a separator
-    self.labelBreak.grid(row=1)
-
 
     self.LabelSlide1=Label()
     self.LabelSlide2=Label()
@@ -243,12 +229,12 @@ class Config(Tool):
 
     self.RadioSlideMatrix=[self.RadioSlideRow1,self.RadioSlideRow2,self.RadioSlideRow3,self.RadioSlideRow4]
 
-    for x in range(0, self.num.get()):
+    for x in range(0, 4):
       self.LabelSlides[x]=Label(self.root,text="Slide #"+str(x+1)+" controls which Ports?")
-      self.LabelSlides[x].grid(row=2+2*x,column=0,columnspan=4)
+      self.LabelSlides[x].grid(row=2*x,column=0,columnspan=4)
       for i in range(0,4):
         self.RadioSlideMatrix[x][i]=Radiobutton(self.root,text=str(i+1), variable=self.Ports[i], value=x*10+i, command=self.RadioSelected)
-        self.RadioSlideMatrix[x][i].grid(row=3+2*x,column=i)
+        self.RadioSlideMatrix[x][i].grid(row=1+2*x,column=i)
         if(self.slides[x][i]==True):
           self.RadioSlideMatrix[x][i].select()
         else:
@@ -256,23 +242,21 @@ class Config(Tool):
 
 
     self.labelBreak2=Label(self.root, height=1, pady=10)	# just a separator
-    self.labelBreak2.grid(row=10)
+    self.labelBreak2.grid(row=8)
 
     self.buttonClose = Button(self.root,text='Close',command=self.close)
-    self.buttonClose.grid(row=11,column=0,columnspan=4)
+    self.buttonClose.grid(row=9,column=0,columnspan=4)
 
 
   def RadioSelected(self):
 
-# it is working
-# now we need somewhere to read the correct ports
-
      self.configchanged.set(True)
 
+     # reset all mappings as we need to redefine them all
      for x in range(0,4):
        self.slides[x]=[False,False,False,False]
 
-     # scan all 16 RadioButtons and set slides port mapping, brute force method
+     # read all 16 RadioButtons and set slides port mapping, brute force method
 
      if (self.Ports[0].get()==0):
        print("Slide #1 uses port 0")
@@ -287,7 +271,6 @@ class Config(Tool):
        print("Slide #4 uses port 0")
        self.slides[3][0]=True
 
-
      if (self.Ports[1].get()==1):
        print("Slide #1 uses port 1")
        self.slides[0][1]=True
@@ -301,7 +284,6 @@ class Config(Tool):
        print("Slide #4 uses port 1")
        self.slides[3][1]=True
 
-
      if (self.Ports[2].get()==2):
        print("Slide #1 uses port 2")
        self.slides[0][2]=True
@@ -314,7 +296,6 @@ class Config(Tool):
      if (self.Ports[2].get()==32):
        print("Slide #4 uses port 2")
        self.slides[3][2]=True
-
 
      if (self.Ports[3].get()==3):
        print("Slide #1 uses port 3")
@@ -330,36 +311,6 @@ class Config(Tool):
        self.slides[3][3]=True
 
      return
-
-  def RemapSlides(self, *ignore):	# don't know why must put *ignore here
-
-    self.configchanged.set(True)
-
-    num_slides=self.num.get()
-
-    for i in range(0,4):
-      if(num_slides==1):
-        self.RadioSlideRow1[i].config(state=NORMAL)
-        self.RadioSlideRow2[i].config(state=DISABLED)
-        self.RadioSlideRow3[i].config(state=DISABLED)
-        self.RadioSlideRow4[i].config(state=DISABLED)
-      elif(num_slides==2):
-        self.RadioSlideRow1[i].config(state=NORMAL)
-        self.RadioSlideRow2[i].config(state=NORMAL)
-        self.RadioSlideRow3[i].config(state=DISABLED)
-        self.RadioSlideRow4[i].config(state=DISABLED)
-      elif(num_slides==3):
-        self.RadioSlideRow1[i].config(state=NORMAL)
-        self.RadioSlideRow2[i].config(state=NORMAL)
-        self.RadioSlideRow3[i].config(state=NORMAL)
-        self.RadioSlideRow4[i].config(state=DISABLED)
-      else:
-        self.RadioSlideRow1[i].config(state=NORMAL)
-        self.RadioSlideRow2[i].config(state=NORMAL)
-        self.RadioSlideRow3[i].config(state=NORMAL)
-        self.RadioSlideRow4[i].config(state=NORMAL)
-    return
-
 
 
   def close(self):
