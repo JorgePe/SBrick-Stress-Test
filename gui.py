@@ -126,8 +126,8 @@ class Tool:
         # update all ports
         if (self.slides[x][i]==True):
           direction="00"
-          if( (speed >= 0 and self.checks[1].get()==1) or
-              (speed <  0 and self.checks[1].get()==0) ):
+          if( (speed >= 0 and self.checks[i].get()==1) or
+              (speed <  0 and self.checks[i].get()==0) ):
             direction="01"
           self.SBRICK.Drive("0"+ str(i) + direction + self.twoDigitHex(abs(speed)))
 
