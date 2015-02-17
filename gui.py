@@ -78,7 +78,7 @@ class Tool:
     LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
     LabelBreak.grid(row=7)
 
-    Button_STOP = Button(text = "STOP all ports", command = self.stop)
+    Button_STOP = Button(text = "STOP all ports", command = self.ports_stop)
     Button_STOP.grid(row=8, column=1)
 
     LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
@@ -137,8 +137,9 @@ class Tool:
     self.root.destroy()
     return;
 
-  def stop(self):
+  def ports_stop(self):
     for i in range(0, 4):
+      self.SBRICK.Stop("0"+str(i))
       self.pwms[i].set(0)
     return;
 
@@ -161,9 +162,7 @@ class Tool:
       # but don't know what to do when 2 ports with different pwm values are mapped
       # to the same scale
 
-      for x in range(0,4):
-        self.SBRICK.Stop("0"+str(x))
-        self.pwms[x].set(0)      
+      self.ports_stop()    
 
       # redraw it all
       self.draw_slides()
