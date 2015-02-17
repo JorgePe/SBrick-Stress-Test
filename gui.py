@@ -87,6 +87,9 @@ class Tool:
     Button_QUIT = Button(text = "QUIT", command = self.quit)
     Button_QUIT.grid(row=8, column=1)
 
+    LabelBreak=Label(self.root, height=1, pady=1)	# just a separator
+    LabelBreak.grid(row=9)
+
 
   def twoDigitHex(self,number):
       return '%02x' % number
