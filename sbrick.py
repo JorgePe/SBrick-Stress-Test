@@ -103,16 +103,17 @@ class SBrick:
     return 0
 
   def ReadTemp(self):
+    unit = " °C"
     if(self.SBRICK_FW_VS=="4.2"):
       call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x00"+self.handle+" --value=0F0E",shell=True)
       sleep(0.01)
       result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x00"+self.handle,shell=True).split(" ")
       t=( int(result[3]+result[2], 16) ) * 0.008413396 - 160
 
-      return("{0:.1f}".format(t)+" °C")
+      return("{0:.1f}".format(t)+unit)
     else:
       # firmware 4.0 can't read temp/volt
-      return("00.0 °C")
+      return("00.0"+unit)
 
   def ReadVolt(self):
     if(self.SBRICK_FW_VS=="4.2"):
