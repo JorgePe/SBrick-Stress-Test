@@ -7,8 +7,6 @@ from gui import Tool
 # exit codes
 EXIT_OK   = 0
 EXIT_ARGS = 2
-#EXIT_FILE = 3
-
 
 def print_help():
   print('')
@@ -18,12 +16,12 @@ def print_help():
   print('')
   print('   <adapter>         HCI adapter, e.g. hci0')
   print('   <device>          SBrick Bluetooh Addres, e.g. AA:BB:CC:DD:EE:FF')
-  print('   <period>          time in milliseconds, e.g. 330')
+  print('   <period>          time in milliseconds, e.g. 100')
   print('')
 
 def print_version():
   print('')
-  print('SBrick Stress Test Tool 0.41 - Jorge Pereira - February 2015')
+  print('SBrick Stress Test Tool 0.50 - Jorge Pereira - February 2015')
 
 
 def main(argv):
