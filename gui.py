@@ -254,61 +254,19 @@ class Config(Tool):
        self.slides[x]=[False,False,False,False]
 
      # scan all 16 RadioButtons and set slides port mapping, brute force method
-
-     if (self.Ports[0].get()==0):
-       print("Slide #1 uses port 0")
-       self.slides[0][0]=True
-     if (self.Ports[0].get()==10):
-       print("Slide #2 uses port 0")
-       self.slides[1][0]=True
-     if (self.Ports[0].get()==20):
-       print("Slide #3 uses port 0")
-       self.slides[2][0]=True
-     if (self.Ports[0].get()==30):
-       print("Slide #4 uses port 0")
-       self.slides[3][0]=True
-
-
-     if (self.Ports[1].get()==1):
-       print("Slide #1 uses port 1")
-       self.slides[0][1]=True
-     if (self.Ports[1].get()==11):
-       print("Slide #2 uses port 1")
-       self.slides[1][1]=True
-     if (self.Ports[1].get()==21):
-       print("Slide #3 uses port 1")
-       self.slides[2][1]=True
-     if (self.Ports[1].get()==31):
-       print("Slide #4 uses port 1")
-       self.slides[3][1]=True
-
-
-     if (self.Ports[2].get()==2):
-       print("Slide #1 uses port 2")
-       self.slides[0][2]=True
-     if (self.Ports[2].get()==12):
-       print("Slide #2 uses port 2")
-       self.slides[1][2]=True
-     if (self.Ports[2].get()==22):
-       print("Slide #3 uses port 2")
-       self.slides[2][2]=True
-     if (self.Ports[2].get()==32):
-       print("Slide #4 uses port 2")
-       self.slides[3][2]=True
-
-
-     if (self.Ports[3].get()==3):
-       print("Slide #1 uses port 3")
-       self.slides[0][3]=True
-     if (self.Ports[3].get()==13):
-       print("Slide #2 uses port 3")
-       self.slides[1][3]=True
-     if (self.Ports[3].get()==23):
-       print("Slide #3 uses port 3")
-       self.slides[2][3]=True
-     if (self.Ports[3].get()==33):
-       print("Slide #4 uses port 3")
-       self.slides[3][3]=True
+     for x in range(0,4):
+       if (self.Ports[x].get()==x):
+         print("Slide #1 uses port " + str(x))
+         self.slides[0][x]=True
+       if (self.Ports[x].get()==10+x):
+         print("Slide #2 uses port " + str(x))
+         self.slides[1][x]=True
+       if (self.Ports[x].get()==20+x):
+         print("Slide #3 uses port " + str(x))
+         self.slides[2][x]=True
+       if (self.Ports[x].get()==30+x):
+         print("Slide #4 uses port " + str(x))
+         self.slides[3][x]=True
 
      return
 
