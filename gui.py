@@ -67,11 +67,17 @@ class Tool:
     self.check4.set(0)
     self.checks = [self.check1, self.check2, self.check3, self.check4]
 
+    LabelBreak=Label(self.root, height=1, pady=20)	# just a separator
+    LabelBreak.grid(row=0)
+
     LabelTemperature=Label(self.root, textvariable=self.temp, font=(FONT_TYPE, FONT_SIZE))
-    LabelTemperature.grid(row=0, column=1)
+#    LabelTemperature.grid(row=0, column=1)
+    LabelTemperature.place(relx=0.3, rely=0.05, anchor=CENTER)
 
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
-    LabelVoltage.grid(row=0, column=2)
+#    LabelVoltage.grid(row=0, column=2)
+    LabelVoltage.place(relx=0.7, rely=0.05, anchor=CENTER)
+
 
     self.draw_slides()
 
