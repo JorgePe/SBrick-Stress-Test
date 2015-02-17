@@ -17,6 +17,6 @@ Other options could be set in GUI:
 - MAX,MIN and RESOLUTION for the Slide Bars (perhaps even LINEAR or LOGARITHMIC scales)
 
 Future features:
-- ~~ Pannic button - stop everything NOW~~
+- ~~Pannic button - stop everything NOW~~
 - BLE scanning and SBrick selection
 - Quick Drive protocol (not available for fw 4.0) - shorter and fewer gatttool commands so (hopefully) better lattency
