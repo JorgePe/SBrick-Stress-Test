@@ -84,6 +84,9 @@ class Tool:
     Button_QUIT = Button(text = "QUIT", command = self.quit)
     Button_QUIT.grid(row=8, column=1)
 
+    LabelBreak=Label(self.root, height=1, pady=1)	# just a separator
+    LabelBreak.grid(row=9)
+
 
   def twoDigitHex(self,number):
       return '%02x' % number
@@ -113,37 +116,15 @@ class Tool:
     for x in range(0,4):
       speed=self.pwms[x].get()
 
-      if (self.slides[x][0]==True):
-         # port #1
-        direction="00"
-        if( (speed >= 0 and self.checks[0].get()==1) or
-            (speed <  0 and self.checks[0].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("00" + direction + self.twoDigitHex(abs(speed)))
+      for i in range(0, 4):
+        # update all ports
+        if (self.slides[x][i]==True):
+          direction="00"
+          if( (speed >= 0 and self.checks[1].get()==1) or
+              (speed <  0 and self.checks[1].get()==0) ):
+            direction="01"
+          self.SBRICK.Drive("0"+ str(i) + direction + self.twoDigitHex(abs(speed)))
 
-      if (self.slides[x][1]==True):
-         # port #2
-        direction="00"
-        if( (speed >= 0 and self.checks[1].get()==1) or
-            (speed <  0 and self.checks[1].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("01" + direction + self.twoDigitHex(abs(speed)))
-
-      if (self.slides[x][2]==True):
-         # port #3
-        direction="00"
-        if( (speed >= 0 and self.checks[2].get()==1) or
-            (speed <  0 and self.checks[2].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("02" + direction + self.twoDigitHex(abs(speed)))
-
-      if (self.slides[x][3]==True):
-         # port #4
-        direction="00"
-        if( (speed >= 0 and self.checks[3].get()==1) or
-            (speed <  0 and self.checks[3].get()==0) ):
-          direction="01"
-        self.SBRICK.Drive("03" + direction + self.twoDigitHex(abs(speed)))
     return
                
   def quit(self):
@@ -256,59 +237,20 @@ class Config(Tool):
      for x in range(0,4):
        self.slides[x]=[False,False,False,False]
 
-     # read all 16 RadioButtons and set slides port mapping, brute force method
 
-     if (self.Ports[0].get()==0):
-       print("Slide #1 uses port 0")
-       self.slides[0][0]=True
-     if (self.Ports[0].get()==10):
-       print("Slide #2 uses port 0")
-       self.slides[1][0]=True
-     if (self.Ports[0].get()==20):
-       print("Slide #3 uses port 0")
-       self.slides[2][0]=True
-     if (self.Ports[0].get()==30):
-       print("Slide #4 uses port 0")
-       self.slides[3][0]=True
-
-     if (self.Ports[1].get()==1):
-       print("Slide #1 uses port 1")
-       self.slides[0][1]=True
-     if (self.Ports[1].get()==11):
-       print("Slide #2 uses port 1")
-       self.slides[1][1]=True
-     if (self.Ports[1].get()==21):
-       print("Slide #3 uses port 1")
-       self.slides[2][1]=True
-     if (self.Ports[1].get()==31):
-       print("Slide #4 uses port 1")
-       self.slides[3][1]=True
-
-     if (self.Ports[2].get()==2):
-       print("Slide #1 uses port 2")
-       self.slides[0][2]=True
-     if (self.Ports[2].get()==12):
-       print("Slide #2 uses port 2")
-       self.slides[1][2]=True
-     if (self.Ports[2].get()==22):
-       print("Slide #3 uses port 2")
-       self.slides[2][2]=True
-     if (self.Ports[2].get()==32):
-       print("Slide #4 uses port 2")
-       self.slides[3][2]=True
-
-     if (self.Ports[3].get()==3):
-       print("Slide #1 uses port 3")
-       self.slides[0][3]=True
-     if (self.Ports[3].get()==13):
-       print("Slide #2 uses port 3")
-       self.slides[1][3]=True
-     if (self.Ports[3].get()==23):
-       print("Slide #3 uses port 3")
-       self.slides[2][3]=True
-     if (self.Ports[3].get()==33):
-       print("Slide #4 uses port 3")
-       self.slides[3][3]=True
+     for x in range(0,4):
+       if (self.Ports[x].get()==x):
+         print("Slide #1 uses port " + str(x))
+         self.slides[0][x]=True
+       if (self.Ports[x].get()==10+x):
+         print("Slide #2 uses port " + str(x))
+         self.slides[1][x]=True
+       if (self.Ports[x].get()==20+x):
+         print("Slide #3 uses port " + str(x))
+         self.slides[2][x]=True
+       if (self.Ports[x].get()==30+x):
+         print("Slide #4 uses port " + str(x))
+         self.slides[3][x]=True
 
      return
 
