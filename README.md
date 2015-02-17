@@ -17,7 +17,9 @@ Firmware 4.2 has a lot of new functions but also some Bluetooth Low Energy handl
 
 The «period» value of 100 may be reduced a bit to achieve slightly better latencies but when testing with my laptop and PERIOD=75 noticed some commands being ignored. It can also be increased but close to 500 ms you will see the SBrick resetting all ports.
 
-This tool also implements a checkbox for each of the 4 ports to toggle the direction of the DRIVE commands.
+This tool also implements:
+- a checkbox for each of the 4 ports to toggle the direction of the DRIVE commands
+- a fast STOP ALL button
 
 Please note that the temperature values are read from a sensor inside the SBrick BLE chipset - other parts of the SBrick, especially the power drivers and the electrical connection WILL BE hotter. I achieved to melt a bit of plastic around the power pins of my Stress Test SBrick with temperature readings ~70ºC (overall current ~7A)
 
