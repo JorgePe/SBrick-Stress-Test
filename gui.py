@@ -78,17 +78,23 @@ class Tool:
 
     self.draw_slides()
 
-    LabelBreak=Label(self.root, height=1, pady=10)	# just a separator
+    LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
     LabelBreak.grid(row=7)
 
+    Button_STOP = Button(text = "STOP all ports", command = self.stop)
+    Button_STOP.grid(row=8, column=1)
+
+    LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
+    LabelBreak.grid(row=9)
+
     Button_Options=Button(self.root,text='Options',command=self.Options)
-    Button_Options.grid(row=8,column=0)
+    Button_Options.grid(row=10,column=0)
 
     Button_QUIT = Button(text = "QUIT", command = self.quit)
-    Button_QUIT.grid(row=8, column=1)
+    Button_QUIT.grid(row=10, column=1)
 
     LabelBreak=Label(self.root, height=1, pady=1)	# just a separator
-    LabelBreak.grid(row=9)
+    LabelBreak.grid(row=11)
 
 
   def twoDigitHex(self,number):
@@ -135,6 +141,10 @@ class Tool:
     self.root.destroy()
     return;
 
+  def stop(self):
+    for i in range(0, 4):
+      self.pwms[i].set(0)
+    return;
 
   def refresh(self):
 
