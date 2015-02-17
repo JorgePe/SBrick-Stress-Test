@@ -67,6 +67,9 @@ class Tool:
     self.check4.set(0)
     self.checks = [self.check1, self.check2, self.check3, self.check4]
 
+    self.draw_elements()
+
+  def draw_elements(self):
     row=0
     LabelBreak=Label(self.root, height=1, pady=20)	# just a separator
     LabelBreak.grid(row=row)
