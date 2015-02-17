@@ -67,26 +67,31 @@ class Tool:
     self.check4.set(0)
     self.checks = [self.check1, self.check2, self.check3, self.check4]
 
+    row=0
     LabelBreak=Label(self.root, height=1, pady=20)	# just a separator
-    LabelBreak.grid(row=0)
+    LabelBreak.grid(row=row)
+    row+=1
 
     LabelTemperature=Label(self.root, textvariable=self.temp, font=(FONT_TYPE, FONT_SIZE))
     LabelTemperature.place(relx=0.3, rely=0.05, anchor=CENTER)
 
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
     LabelVoltage.place(relx=0.7, rely=0.05, anchor=CENTER)
+    row+=1
 
-
-    self.draw_slides()
+    self.draw_slides(row)
+    row+=6
 
     LabelBreak=Label(self.root, height=1, pady=5)	# just a separator
-    LabelBreak.grid(row=7)
+    LabelBreak.grid(row=row)
+    row+=1
 
     Button_STOP = Button(text = "STOP all ports", command = self.ports_stop)
     Button_STOP.place(relx=0.5, rely=0.9, anchor=CENTER)
+    row+=1
 
     LabelBreak=Label(self.root, height=1, pady=25)	# just a separator
-    LabelBreak.grid(row=9)
+    LabelBreak.grid(row=row)
 
     Button_Options=Button(self.root,text='Options',command=self.Options)
     Button_Options.place(relx=0.3,rely=0.95,anchor=CENTER)
@@ -99,7 +104,7 @@ class Tool:
       return '%02x' % number
 
 
-  def draw_slides(self):
+  def draw_slides(self, row=2):
 
     col=0
     for x in range(0,4):
@@ -107,12 +112,12 @@ class Tool:
       for i in range(0,4):
         if(self.slides[x][i]==True):
           CheckPort=Checkbutton(self.root, variable = self.checks[i],takefocus=1, text="Port #"+str(i+1), padx=50, pady=10)
-          CheckPort.grid(row=2+count,column=col)
+          CheckPort.grid(row=row+count,column=col)
           count+=1
 
       if(count>0):
        Port = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=5, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
-       Port.grid(row=6,column=col)
+       Port.grid(row=row+4,column=col)
        col+=1
 
 
@@ -179,6 +184,7 @@ class Tool:
 class Config(Tool):
   def __init__(self, root, tool):
     self.root = root
+    self.root.resizable(width=FALSE, height=FALSE)
     self.slides=tool.slides
     self.configchanged=tool.configchanged
 
@@ -220,23 +226,26 @@ class Config(Tool):
 
     self.RadioSlideMatrix=[self.RadioSlideRow1,self.RadioSlideRow2,self.RadioSlideRow3,self.RadioSlideRow4]
 
+    row=0
     for x in range(0, 4):
+      row=2*x
       self.LabelSlides[x]=Label(self.root,text="Slide #"+str(x+1)+" controls which Ports?")
-      self.LabelSlides[x].grid(row=2*x,column=0,columnspan=4)
+      self.LabelSlides[x].grid(row=row,column=0,columnspan=4)
       for i in range(0,4):
         self.RadioSlideMatrix[x][i]=Radiobutton(self.root,text=str(i+1), variable=self.Ports[i], value=x*10+i, command=self.RadioSelected)
-        self.RadioSlideMatrix[x][i].grid(row=1+2*x,column=i)
+        self.RadioSlideMatrix[x][i].grid(row=1+row,column=i)
         if(self.slides[x][i]==True):
           self.RadioSlideMatrix[x][i].select()
         else:
           self.RadioSlideMatrix[x][i].deselect()
+    row+=2
 
 
-    self.labelBreak2=Label(self.root, height=1, pady=10)	# just a separator
-    self.labelBreak2.grid(row=8)
+    self.labelBreak2=Label(self.root, height=1, pady=13)	# just a separator
+    self.labelBreak2.grid(row=row)
 
     self.buttonClose = Button(self.root,text='Close',command=self.close)
-    self.buttonClose.grid(row=9,column=0,columnspan=4)
+    self.buttonClose.place(relx=0.5,rely=0.9,anchor=CENTER)
 
 
   def RadioSelected(self):
