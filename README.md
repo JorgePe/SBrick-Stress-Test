@@ -2,6 +2,10 @@
 
 Python script to test the limits of Vengit SBrick from linux system using BlueZ 5 gatttool
 
+A quick video demo:
+
+[![SBrick Video Demo](http://img.youtube.com/vi/4ee8OOaZ0eI/0.jpg)](http://www.youtube.com/watch?v=4ee8OOaZ0eI)
+
 Usage:
 
 sbstress.py -a 'adapter>' -d 'device' -p 'period'
