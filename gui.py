@@ -171,7 +171,7 @@ class Tool:
       # but don't know what to do when 2 ports with different pwm values are mapped
       # to the same scale
 
-      self.ports_stop()    
+      #self.ports_stop()
 
       # redraw it all
       self.draw_slides()
