@@ -90,6 +90,9 @@ class SBrick:
     if (self.SBRICK_FW_VS == "4.0" and Command[-2:] == "ff"):
       Command=Command[:-1]+Command[-1:].replace("f", "e")
 
+# debugging
+#    print("operation Command:",operation,Command)
+
     call("gatttool --device=" + self.SBRICK + " --adapter=" + self.BT_ADAPTER + " --char-write --handle=0x00"+self.handle+" --value="+ operation + Command, shell=True)
     return 0
 
@@ -100,6 +103,7 @@ class SBrick:
       return 0;
 
     self.Drive(Command, "00")
+
     return 0
 
   def ReadTemp(self):

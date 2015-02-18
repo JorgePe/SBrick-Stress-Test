@@ -148,9 +148,10 @@ class Tool:
 
   def ports_stop(self):
     for i in range(0, 4):
-      self.SBRICK.Stop("0"+str(i))
+ #     self.SBRICK.Stop("0"+str(i))
       self.pwms[i].set(0)
-    return;
+
+    return
 
   def refresh(self):
 
@@ -262,16 +263,16 @@ class Config(Tool):
 
      for x in range(0,4):
        if (self.Ports[x].get()==x):
-         print("Slide #1 uses port " + str(x))
+#         print("Slide #1 uses port " + str(x))
          self.slides[0][x]=True
        if (self.Ports[x].get()==10+x):
-         print("Slide #2 uses port " + str(x))
+#         print("Slide #2 uses port " + str(x))
          self.slides[1][x]=True
        if (self.Ports[x].get()==20+x):
-         print("Slide #3 uses port " + str(x))
+#         print("Slide #3 uses port " + str(x))
          self.slides[2][x]=True
        if (self.Ports[x].get()==30+x):
-         print("Slide #4 uses port " + str(x))
+#         print("Slide #4 uses port " + str(x))
          self.slides[3][x]=True
 
      return
