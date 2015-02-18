@@ -67,6 +67,9 @@ class Tool:
     self.check4.set(0)
     self.checks = [self.check1, self.check2, self.check3, self.check4]
 
+    self.checkLED=IntVar()
+    self.checkLED.set(0)
+
     self.draw_elements()
 
   def draw_elements(self):
@@ -80,6 +83,10 @@ class Tool:
 
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
     LabelVoltage.place(relx=0.7, rely=0.05, anchor=CENTER)
+    row+=1
+
+    CheckLED=Checkbutton(self.root, variable = self.checkLED,takefocus=1, text="Indicator LED", padx=10, pady=10, command=self.DriveLED)
+    CheckLED.grid(row=row)
     row+=1
 
     self.draw_slides(row)
@@ -106,6 +113,11 @@ class Tool:
   def twoDigitHex(self,number):
       return '%02x' % number
 
+  def DriveLED(self):
+    if ( self.checkLED.get()==1):
+      self.SBRICK.Led(True)
+    else:
+      self.SBRICK.Led(False)
 
   def draw_slides(self, row=2):
 

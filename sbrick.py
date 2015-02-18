@@ -86,6 +86,14 @@ class SBrick:
   def GetPeriod (self):
      return self.PERIOD
 
+  def Led (self, on=True):
+      command="0400"
+      if ( on == True ):
+        command+="ff"
+      else:
+        command+="00"
+      self.Drive(command)
+
   def Drive (self, Command, operation="01"):
     if (self.SBRICK_FW_VS == "4.0" and Command[-2:] == "ff"):
       Command=Command[:-1]+Command[-1:].replace("f", "e")
