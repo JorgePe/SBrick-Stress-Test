@@ -67,41 +67,43 @@ class Tool:
     self.check4.set(0)
     self.checks = [self.check1, self.check2, self.check3, self.check4]
 
+    self.CheckPort1=Checkbutton()
+    self.CheckPort2=Checkbutton()
+    self.CheckPort3=Checkbutton()
+    self.CheckPort4=Checkbutton()
+    self.CheckPorts=[self.CheckPort1,self.CheckPort2,self.CheckPort3,self.CheckPort4]
+
+    self.PortScale1=Scale()
+    self.PortScale2=Scale()
+    self.PortScale3=Scale()
+    self.PortScale4=Scale()
+    self.PortScales=[self.PortScale1,self.PortScale2,self.PortScale3,self.PortScale4]
+
     self.checkLED=IntVar()
     self.checkLED.set(0)
 
+    # force the window size as we are having resing problems
+    # (not a good idea but it is a start)
+    self.root.minsize(400,800)
+
     self.draw_elements()
 
+
   def draw_elements(self):
-    row=0
-    LabelBreak=Label(self.root, height=1, pady=20)	# just a separator
-    LabelBreak.grid(row=row)
-    row+=1
 
     LabelTemperature=Label(self.root, textvariable=self.temp, font=(FONT_TYPE, FONT_SIZE))
-    LabelTemperature.place(relx=0.3, rely=0.05, anchor=CENTER)
+    LabelTemperature.place(relx=0.3, rely=0.03, anchor=CENTER)
 
     LabelVoltage=Label(self.root, textvariable=self.volt, font=(FONT_TYPE, FONT_SIZE))
-    LabelVoltage.place(relx=0.7, rely=0.05, anchor=CENTER)
-    row+=1
+    LabelVoltage.place(relx=0.7, rely=0.03, anchor=CENTER)
+
+    self.draw_slides()
 
     CheckLED=Checkbutton(self.root, variable = self.checkLED,takefocus=1, text="Indicator LED", padx=10, pady=10, command=self.DriveLED)
-    CheckLED.grid(row=row)
-    row+=1
+    CheckLED.place(relx=0.3, rely=0.9, anchor=CENTER)
 
-    self.draw_slides(row)
-    row+=8
-
-    LabelBreak=Label(self.root, height=1, pady=10)	# just a separator
-    LabelBreak.grid(row=row)
-    row+=1
-
-    Button_STOP = Button(text = "STOP all ports", command = self.ports_stop)
-    Button_STOP.place(relx=0.5, rely=0.9, anchor=CENTER)
-    row+=1
-
-    LabelBreak=Label(self.root, height=1, pady=25)	# just a separator
-    LabelBreak.grid(row=row)
+    Button_STOP = Button(text = "STOP ALL", command = self.ports_stop)
+    Button_STOP.place(relx=0.7, rely=0.9, anchor=CENTER)
 
     Button_Options=Button(self.root,text='Options',command=self.Options)
     Button_Options.place(relx=0.3,rely=0.95,anchor=CENTER)
@@ -119,30 +121,48 @@ class Tool:
     else:
       self.SBRICK.Led(False)
 
-  def draw_slides(self, row=2):
+  def draw_slides(self):
 
+    #first calculate the number of slides so we can center
     col=0
     for x in range(0,4):
       count=0
       for i in range(0,4):
         if(self.slides[x][i]==True):
-          CheckPort=Checkbutton(self.root, variable = self.checks[i],takefocus=1, text="Port #"+str(i+1), padx=50, pady=10)
-          CheckPort.grid(row=row+count,column=col)
           count+=1
-
       if(count>0):
-       Port = Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=5, orient=VERTICAL, length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
-       Port.grid(row=row+4,column=col)
-       col+=1
+        col+=1    
 
+    # 1/(col+1) looks good
+    if(col==1):
+      RelX=0.5
+    elif(col==2):
+      RelX=0.33
+    elif(col==3):
+      RelX=0.25
+    else:
+      RelX=0.2
 
-  def Sync(self, *ignore):
-
-    # one slide may now control several ports
+    col=0
+    nChecks=0
 
     for x in range(0,4):
-      speed=self.pwms[x].get()
+      count=0
+      for i in range(0,4):
+        if(self.slides[x][i]==True):
+          self.CheckPorts[nChecks]=Checkbutton(self.root, variable = self.checks[i],takefocus=1, text="Port #"+str(i+1), padx=10, pady=10)
+          self.CheckPorts[nChecks].place(relx=RelX+RelX*col,rely=0.05+0.03*(count+1),anchor=CENTER)
+          count+=1
+          nChecks+=1
 
+      if(count>0):
+       self.PortScales[col]=Scale(self.root, from_=self.ScaleMAX, to=self.ScaleMIN, digits=3, resolution=5, orient=VERTICAL,length=self.LENGTH, takefocus=1, command=self.Sync, variable=self.pwms[x])
+       self.PortScales[col].place(relx=RelX+RelX*col,rely=0.5,anchor=CENTER)
+       col+=1    
+
+  def Sync(self, *ignore):
+    for x in range(0,4):
+      speed=self.pwms[x].get()
       for i in range(0, 4):
         # update all ports
         if (self.slides[x][i]==True):
@@ -151,7 +171,6 @@ class Tool:
               (speed <  0 and self.checks[i].get()==0) ):
             direction="01"
           self.SBRICK.Drive("0"+ str(i) + direction + self.twoDigitHex(abs(speed)))
-
     return
                
   def quit(self):
@@ -174,9 +193,13 @@ class Tool:
 
     if(self.configchanged.get() == True):
       # remove all scales and checkbuttons
-      for r in range(2,7):
-        for slaves in self.root.grid_slaves(row=r):
-          slaves.grid_remove()
+#      for r in range(2,7):
+#        for slaves in self.root.grid_slaves(row=r):
+#          slaves.grid_remove()   # I'm not sure if we should forget instead of remove
+
+      for c in range(0,4):
+         self.CheckPorts[c].place_forget()
+         self.PortScales[c].place_forget()
 
       # reset al scale values - if we want "memory" we should make pwm a
       # property of the port (not a property of the scale)
