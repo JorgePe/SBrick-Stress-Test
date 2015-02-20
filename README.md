@@ -1,4 +1,4 @@
-# SBrick-Stress-Test v0.50
+# SBrick-Stress-Test v0.51
 
 Python script to test the limits of Vengit SBrick from linux system using BlueZ 5 gatttool
 
