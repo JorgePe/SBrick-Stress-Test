@@ -23,13 +23,14 @@ The «period» value of 100 may be reduced a bit to achieve slightly better late
 
 This tool also implements:
 - a checkbox for each of the 4 ports to toggle the direction of the DRIVE commands
-- a fast STOP ALL button
+- a quick 'STOP ALL' button
+- 'Identify' LED button
 
 Please note that the temperature values are read from a sensor inside the SBrick BLE chipset - other parts of the SBrick, especially the power drivers and the electrical connection WILL BE hotter. I achieved to melt a bit of plastic around the power pins of my Stress Test SBrick with temperature readings ~70ºC (overall current ~7A)
 
 The SBrick can work with low voltages, I've used it with 3.7V LiPo batteries without issues. But with high loads internal voltage will drop, even if you use excellent high current batteries. If internal voltage drops bellow 3.3~3.5V the SBrick turns off.
 
-Also please note that I do not consider myself a good programmer (some weeks ago not even A programmer!). 
+Also please note that I do not consider myself a good programmer (some weeks ago not even A programmer!). Improving this tool had been a fun way to teach my self Python and GUI programming but I still lack a solid background (classes, objects, exceptions, source control...).
 I want to thank [szigetigabor](https://github.com/szigetigabor) for polishing and improving the original code.
 
 There will be future improvements to this tool so it will become more like an SBrick Controller than a Stress Tester.
