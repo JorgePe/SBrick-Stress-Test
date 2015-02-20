@@ -82,8 +82,8 @@ class Tool:
     self.checkLED=IntVar()
     self.checkLED.set(0)
 
-    # force the window size as we are having resing problems
-    # (not a good idea but it is a start)
+    # force the window size as we are having resizing problems
+    # (not a great idea but it is a start)
     self.root.minsize(400,800)
 
     self.draw_elements()
@@ -110,7 +110,6 @@ class Tool:
 
     Button_QUIT = Button(text = "QUIT", command = self.quit)
     Button_QUIT.place(relx=0.7,rely=0.95,anchor=CENTER)
-
 
   def twoDigitHex(self,number):
       return '%02x' % number
@@ -279,13 +278,11 @@ class Config(Tool):
           self.RadioSlideMatrix[x][i].deselect()
     row+=2
 
-
     self.labelBreak2=Label(self.root, height=1, pady=13)	# just a separator
     self.labelBreak2.grid(row=row)
 
     self.buttonClose = Button(self.root,text='Close',command=self.close)
-    self.buttonClose.place(relx=0.5,rely=0.9,anchor=CENTER)
-
+    self.buttonClose.grid(row=row,column=0,columnspan=4)
 
   def RadioSelected(self):
 
@@ -298,22 +295,17 @@ class Config(Tool):
 
      for x in range(0,4):
        if (self.Ports[x].get()==x):
-#         print("Slide #1 uses port " + str(x))
          self.slides[0][x]=True
        if (self.Ports[x].get()==10+x):
-#         print("Slide #2 uses port " + str(x))
          self.slides[1][x]=True
        if (self.Ports[x].get()==20+x):
-#         print("Slide #3 uses port " + str(x))
          self.slides[2][x]=True
        if (self.Ports[x].get()==30+x):
-#         print("Slide #4 uses port " + str(x))
          self.slides[3][x]=True
 
      return
 
 
   def close(self):
-#    nr_slides=self.num
     self.root.destroy()
 
