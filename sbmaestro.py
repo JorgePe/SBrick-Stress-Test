@@ -69,17 +69,21 @@ def main(argv):
     print('sbmaestro - SBrick Conducting Tool')
     SBRICK = SBrick(BT_ADAPTER, SBRICK_ADDR, PERIOD)
 
-    # There seems to be a deviation in time so take 15 ms in 100
+    # There seems to be a deviation in time so subtract 1 ms in 100
     # will see this later
-    STEP=float(PERIOD-15)/1000
-
+    STEP=(float(PERIOD)-1.0)/1000
+   
     playfile=open(PLAYFILE,'r')
 
+    count=0
     for line in playfile:
       command=line.strip('\n')
 #      print(command)
       SBRICK.Drive(command)
-      sleep(STEP)
+      count=count+1
+      if (count==4):
+        sleep(STEP)
+        count=0
 
     playfile.close()
 
