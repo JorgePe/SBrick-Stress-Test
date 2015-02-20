@@ -8,7 +8,7 @@ from time import sleep
 FONT_TYPE = "Helvetica"
 FONT_SIZE = 16
 
-
+RECORDFILE = './test.sbr'
 
 class Tool:
 
@@ -19,6 +19,9 @@ class Tool:
 
   def __init__(self, sbrick):
     self.SBRICK = sbrick
+
+    self.file=open(RECORDFILE, 'a')
+
     self.ScaleMAX = sbrick.GetScaleMAX()
     self.ScaleMIN = -1*self.ScaleMAX
     self.LENGTH = abs(self.ScaleMAX - self.ScaleMIN)
@@ -82,6 +85,9 @@ class Tool:
     self.checkLED=IntVar()
     self.checkLED.set(0)
 
+    self.checkRECORD=BooleanVar()
+    self.checkRECORD.set(False)
+
     # force the window size as we are having resizing problems
     # (not a great idea but it is a start)
     self.root.minsize(400,800)
@@ -99,11 +105,14 @@ class Tool:
 
     self.draw_slides()
 
-    CheckLED=Checkbutton(self.root, variable = self.checkLED,takefocus=1, text="Indicator LED", padx=10, pady=10, command=self.DriveLED)
-    CheckLED.place(relx=0.3, rely=0.9, anchor=CENTER)
+    Checkb_IDLED=Checkbutton(self.root, variable = self.checkLED,takefocus=1, text="ID LED", padx=10, pady=10, command=self.DriveLED)
+    Checkb_IDLED.place(relx=0.25, rely=0.9, anchor=CENTER)
 
     Button_STOP = Button(text = "STOP ALL", command = self.ports_stop)
-    Button_STOP.place(relx=0.7, rely=0.9, anchor=CENTER)
+    Button_STOP.place(relx=0.5, rely=0.9, anchor=CENTER)
+
+    Checkb_RECORD=Checkbutton(self.root,variable=self.checkRECORD,takefocus=1,text="REC", padx=10,pady=10, command=self.Record)
+    Checkb_RECORD.place(relx=0.75,rely=0.9,anchor=CENTER)
 
     Button_Options=Button(self.root,text='Options',command=self.Options)
     Button_Options.place(relx=0.3,rely=0.95,anchor=CENTER)
@@ -119,6 +128,11 @@ class Tool:
       self.SBRICK.Led(True)
     else:
       self.SBRICK.Led(False)
+
+  def Record(self):
+     # Currently this is useless
+     # print(self.checkRECORD.get())
+    return
 
   def draw_slides(self):
 
@@ -169,10 +183,14 @@ class Tool:
           if( (speed >= 0 and self.checks[i].get()==1) or
               (speed <  0 and self.checks[i].get()==0) ):
             direction="01"
-          self.SBRICK.Drive("0"+ str(i) + direction + self.twoDigitHex(abs(speed)))
+          command="0"+ str(i) + direction + self.twoDigitHex(abs(speed))
+          self.SBRICK.Drive(command)
+          if(self.checkRECORD.get()==True):
+            self.file.write(command+'\n')
     return
                
   def quit(self):
+    self.file.close()
     self.root.destroy()
     return;
 
