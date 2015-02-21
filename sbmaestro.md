@@ -3,6 +3,10 @@
 This is a (very new) command line python tool to replay previously generated SBrick commands.
 Presently it reads one file 'test.sbr' that contains SBrick commands as generated with 'sbstress' tool.
 
+Here is a video demo of the initial release:
+
+[![sbmaestro Video Demo](http://img.youtube.com/vi/-hVqP06HbIY/0.jpg)](http://www.youtube.com/watch?v=-hVqP06HbIY)
+
 The file contais groups of four lines. Each group is a Step and consists of the state of the four SBrick ports until the next Step.
 Each Step follows this format:
 
@@ -27,11 +31,9 @@ This means: «tell the SBrick that until the next step it should:
 
 or in other words: «tell the SBrick to apply 6% to Port#1 and -50% to Port#2, leave the other two ports quiet».
 
-At this early stage, each Step lasts 100 ms.
-
 The script accepts the same arguments of 'sbstress', e.g.:
 
 ./sbmaestro.py -a hci1 -d 00:07:80:2E:41:97 -p 100
 
-
+The period (100 ms above) sets the time between each group of 4 lines.
 
