@@ -62,8 +62,8 @@ class SBrick:
       print("Will limit values to 0..FE as FF doesn't work")
       self.ScaleMAX = 254
       self.handle = "25"
-    elif(self.SBRICK_FW_VS == "4.2"):
-      print("Will use SBrick firmware 4.2 handles")
+    elif(self.SBRICK_FW_VS >= "4.2"):
+      print("Will use SBrick firmware "+self.SBRICK_FW_VS+" handles")
       self.ScaleMAX = 255
       self.handle = "1A"
     else:
@@ -116,7 +116,7 @@ class SBrick:
 
   def ReadTemp(self):
     unit = " °C"
-    if(self.SBRICK_FW_VS=="4.2"):
+    if(self.SBRICK_FW_VS>="4.2"):
       call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x00"+self.handle+" --value=0F0E",shell=True)
       sleep(0.01)
       result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x00"+self.handle,shell=True).split(" ")
@@ -128,7 +128,7 @@ class SBrick:
       return("00.0"+unit)
 
   def ReadVolt(self):
-    if(self.SBRICK_FW_VS=="4.2"):
+    if(self.SBRICK_FW_VS>="4.2"):
       call("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-write --handle=0x00"+self.handle+" --value=0F00",shell=True)
       sleep(0.01)
       result=check_output("gatttool -b "+self.SBRICK+" -i "+self.BT_ADAPTER+" --char-read --handle=0x00"+self.handle,shell=True).split(" ")
